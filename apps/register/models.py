@@ -64,11 +64,12 @@ class Patient(models.Model):
     lastName = models.CharField(max_length=50, default='')
     number = models.CharField(max_length=13, default='')
     address = models.CharField(max_length=100, default='')
-class Diseases(models.Model):
+    gender = models.CharField(max_length=23, default='')
     weight = models.CharField(max_length=6, default='')
+class Diseases(models.Model):
     previous_symptoms=models.CharField(max_length=12,default='')
     allergies = models.TextField(max_length=500, default='')
-    gender = models.CharField(max_length=23, default='')
+
     username = models.CharField(max_length=30, default='')
     hospital = models.ForeignKey(Hospital, default=None, blank=True, null=True, on_delete=models.CASCADE,)
 
