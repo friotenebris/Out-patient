@@ -1,10 +1,16 @@
 from django.shortcuts import render, HttpResponse, redirect
 from django.contrib import messages
 import bcrypt
-from .models import User
+from .models import User,Doctor
 
 def index(request):
     return render(request, 'register/index.html')
+def doctor(request):
+    doctor = Doctor.objects.order_by('username')
+    dic = {'doc_list':doctor}
+    return render(request,'doctor.html',dic)
+def main_page(request):
+    return render(request,'main.html')
 
 def register(request):
     errors = User.objects.validator(request.POST)

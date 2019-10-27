@@ -24,7 +24,7 @@ class UserManager(models.Manager):
 class User(models.Model):
     first_name = models.CharField(max_length=255,)
     last_name = models.CharField(max_length=255)
-    email = models.CharField(max_length=255)
+    email = models.CharField(max_length=255,unique=True)
     password = models.CharField(max_length=255)
     created_at = models.DateTimeField(auto_now_add = True)
     updated_at = models.DateTimeField(auto_now = True)
@@ -34,12 +34,7 @@ class User(models.Model):
 from django.db import models
 from datetime import date
 
-class Hospital(models.Model):
-    name = models.CharField(max_length=50, default='')
-    address = models.CharField(max_length=200, default='')
 
-    def __str__(self):
-        return self.name
 
 
 
@@ -48,14 +43,12 @@ class Doctor(models.Model):
     firstName = models.CharField(max_length=50, default='')
     lastName = models.CharField(max_length=50, default='')
     username = models.CharField(max_length=30, default='')
-    workplace = models.ForeignKey(Hospital, null=True, on_delete=models.CASCADE,)
+    field = models.CharField(max_length=20,default="")
+    user = models.ForeignKey(User, null=True, on_delete=models.CASCADE,)
+
 
     def __str__(self):
         return self.firstName + " " + self.lastName
-
-    def getWorkplace(self, doctor):
-        return doctor.workplace
-
 
 
 
@@ -66,64 +59,49 @@ class Patient(models.Model):
     address = models.CharField(max_length=100, default='')
     gender = models.CharField(max_length=23, default='')
     weight = models.CharField(max_length=6, default='')
-class Diseases(models.Model):
     previous_symptoms=models.CharField(max_length=12,default='')
     allergies = models.TextField(max_length=500, default='')
+    user = models.ForeignKey(User, null=True, on_delete=models.CASCADE,)
 
-    username = models.CharField(max_length=30, default='')
-    hospital = models.ForeignKey(Hospital, default=None, blank=True, null=True, on_delete=models.CASCADE,)
 
-    def __str__(self):
-        return self.firstName + " " + self.lastName
 
-    def getEmergencyContact(self, patient):
-        return patient.contact
-
-    def getHospital(self, patient):
-        return patient.hospital
-
-class Nurse(models.Model):
-    firstName = models.CharField(max_length=50, default='')
-    lastName = models.CharField(max_length=50, default='')
-    username = models.CharField(max_length=30, default='')
-    workplace = models.ForeignKey(Hospital, null=True,   on_delete=models.CASCADE,)
-
-    def __str__(self):
-        return self.firstName + " " + self.lastName
-
-    def getWorkplace(self, nurse):
-        return nurse.workplace
-
+#
+# class Nurse(models.Model):
+#     firstName = models.CharField(max_length=50, default='')
+#     lastName = models.CharField(max_length=50, default='')
+#     username = models.CharField(max_length=30, default='')
+#     partytime = models.DateTimeField()
+#     def __str__(self):
+#         return self.firstName + " " + self.lastName
+#
 
 
 
 class Administrator(models.Model):
     firstName = models.CharField(max_length=50, default='')
     lastName = models.CharField(max_length=50, default='')
-    username = models.CharField(max_length=30, default='')
-    workplace = models.ForeignKey(Hospital, null=True,   on_delete=models.CASCADE,)
-
+    # username = models.CharField(max_length=30, default='')
+    # user = models.ForeignKey(User, null=True, on_delete=models.CASCADE,)
     def __str__(self):
         return self.firstName + " " + self.lastName
 
-    def getWorkplace(self, admin):
-        return admin.workplace
 
 
-class Prescription(models.Model):
-    name = models.CharField(max_length=50, default='')
-    patient = models.ForeignKey(Patient, null=True, on_delete=models.CASCADE,)
-    doctor = models.ForeignKey(Doctor, null=True, on_delete=models.CASCADE,)
-    dosage = models.CharField(max_length=100,   )
 
-    def __str__(self):
-        return self.name
-
-    def getPatient(self, pre):
-        return pre.patient
-
-    def getDoctor(self, pre):
-        return pre.doctor
+# class Prescription(models.Model):
+#     name = models.CharField(max_length=50, default='')
+#     patient = models.ForeignKey(Patient, null=True, on_delete=models.CASCADE,)
+#     doctor = models.ForeignKey(Doctor, null=True, on_delete=models.CASCADE,)
+#     dosage = models.CharField(max_length=100,   )
+#
+#     def __str__(self):
+#         return self.name
+#
+#     def getPatient(self, pre):
+#         return pre.patient
+#
+#     def getDoctor(self, pre):
+#         return pre.doctor
 
 
 
@@ -149,14 +127,12 @@ class Appointment(models.Model):
     year = models.CharField(max_length=4, default='')
     time= models.CharField(max_length=2, default='')
     patient = models.ForeignKey(Patient, null=True,   on_delete=models.CASCADE,)
-    location = models.ForeignKey(Hospital, null=True,   on_delete=models.CASCADE,)
     doctor = models.ForeignKey(Doctor, null=True,   on_delete=models.CASCADE,)
 
     def getPatient(self, appoint):
         return appoint.patient
 
-    def getLocation(self, appoint):
-        return appoint.location
+
 
     def getDoctor(self, appoint):
         return appoint.doctor
